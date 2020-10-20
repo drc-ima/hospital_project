@@ -26,7 +26,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', LoginView.as_view(), name='login'),
     path('apps/', TemplateView.as_view(template_name='user/apps.html'), name='apps'),
-    path('layout/', TemplateView.as_view(template_name='layouts/dept_layout.html')),
+    path('layout/', TemplateView.as_view(template_name='layouts/portal_layout.html')),
     path('administration/', include(manage_urls, namespace='management')),
     path('department/', include(department_urls, namespace='department')),
     path('portal/', include(portal_urls, namespace='portal')),
