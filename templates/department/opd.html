@@ -1,17 +1,12 @@
 {% extends 'layouts/dept_layout.html' %}
-{% block pat %}
-active
-{% endblock %}
-{% block title %}
-Patients
+{% block opd %}
+    active
 {% endblock %}
 {% block page_title %}
-Patients
+    Out Patients Department
 {% endblock %}
-{% block btn %}
-    <a href="{% url 'department:add-patient' %}" class="btn btn-sm btn-info">
-        <i class="fa fa-plus"></i> Add Patient
-    </a>
+{% block title %}
+    OPD
 {% endblock %}
 {% block content %}
     <div class="card">
@@ -41,6 +36,8 @@ Patients
                             </td>
                         </tr>
                     {% endfor %}
+
+
                     </tbody>
                 </table>
             </div>
