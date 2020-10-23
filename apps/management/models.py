@@ -169,3 +169,4 @@ class Treatment(models.Model):
 
     class Meta:
         db_table = 'treatment'
+        ordering = ('-created_at',)
