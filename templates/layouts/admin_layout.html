@@ -18,6 +18,7 @@
 
     <!-- Custom styles for this template-->
     <link href="{% static 'css/sb-admin-2.min.css' %}" rel="stylesheet">
+    {% block css %}{% endblock %}
 
 </head>
 
@@ -57,12 +58,22 @@
 
         <!-- Nav Item - Pages Collapse Menu -->
         <li class="nav-item {% block acc %}{% endblock %}">
-            <a class="nav-link" href="index.html">
+            <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="true" aria-controls="collapseTwo">
                 <i class="fas fa-fw fa-credit-card"></i>
-                <span>Accounts</span></a>
+                <span>Accounts</span>
+            </a>
+            <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
+                <div class="bg-white py-2 collapse-inner rounded">
+                    <h6 class="collapse-header">Overview:</h6>
+                    <a class="collapse-item {% block exp %}{% endblock %}" href="#">Expenditure</a>
+                    <a class="collapse-item {% block rev %}{% endblock %}" href="#">Revenue</a>
+                    <a class="collapse-item {% block rem %}{% endblock %}" href="#">Remuneration</a>
+                    <a class="collapse-item {% block req %}{% endblock %}" href="{% url 'management:requests' %}">Requests</a>
+                </div>
+            </div>
         </li>
         <li class="nav-item {% block hr %}{% endblock %}">
-            <a class="nav-link" href="index.html">
+            <a class="nav-link" href="{% url 'management:hr' %}">
                 <i class="fas fa-fw fa-handshake"></i>
                 <span>HR</span></a>
         </li>
@@ -333,7 +344,7 @@
             <div class="modal-body">Select "Logout" below if you are ready to end your current session.</div>
             <div class="modal-footer">
                 <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
-                <a class="btn btn-primary" href="login.html">Logout</a>
+                <a class="btn btn-primary" href="{% url 'user:logout' %}">Logout</a>
             </div>
         </div>
     </div>

@@ -44,13 +44,16 @@ class Bed(models.Model):
 
     class Meta:
         db_table = 'bed'
+        ordering = ('number',)
 
 
 class BedAllocate(models.Model):
     bed = models.ForeignKey(Bed, on_delete=models.SET_NULL, blank=True, null=True, related_name='bed_allocate_bed')
     patient = models.ForeignKey('Patient', on_delete=models.SET_NULL, blank=True, null=True, related_name='bed_allocate_patient')
-    admitted_at = models.DateField(blank=True, null=True)
-    discharged_at = models.DateField(blank=True, null=True)
+    date_admitted = models.DateField(blank=True, null=True)
+    time_admitted = models.TimeField(blank=True, null=True)
+    time_discharged = models.TimeField(blank=True, null=True)
+    date_discharged = models.DateField(blank=True, null=True)
     created_at = models.DateTimeField(default=timezone.now)
     created_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL,
                                    related_name='bed_allocates', blank=True, null=True)
@@ -81,7 +84,8 @@ GENDER = {
 PATIENT_TYPE = {
     ('OPD', 'OPD'),
     ('Ward', 'Ward'),
-    ('ER', 'Emergency')
+    ('ER', 'Emergency'),
+    ('Discharged', 'Discharged')
 }
 
 
@@ -101,8 +105,11 @@ class Patient(models.Model):
     gender = models.CharField(max_length=100, blank=True, null=True, choices=GENDER)
     marital_status = models.CharField(max_length=100, blank=True, null=True, choices=MARITAL)
     date_of_birth = models.DateField(blank=True, null=True)
-    admitted_at = models.DateTimeField(blank=True, null=True)
-    discharged_at = models.DateTimeField(blank=True, null=True)
+    date_admitted = models.DateField(blank=True, null=True)
+    time_admitted = models.TimeField(blank=True, null=True)
+    time_discharged = models.TimeField(blank=True, null=True)
+    date_discharged = models.DateField(blank=True, null=True)
+    bed = models.ForeignKey(Bed, on_delete=models.SET_NULL, related_name='patient_bed', blank=True, null=True)
     weight = models.CharField(max_length=10, blank=True, null=True)
     bp = models.CharField(max_length=100, blank=True, null=True)
     respiration = models.CharField(max_length=100, blank=True, null=True)
@@ -160,13 +167,86 @@ class Treatment(models.Model):
     comment = models.CharField(max_length=100, blank=True, null=True)
     time_treated = models.TimeField(blank=True, null=True)
     date_treated = models.DateField(blank=True, null=True)
+    pharmacy_prescription = models.ForeignKey('pharmacy.Prescription', on_delete=models.SET_NULL,
+                                              related_name='treatment_prescription', blank=True, null=True)
     created_at = models.DateTimeField(default=timezone.now)
     created_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL,
                                    related_name='treatments', blank=True, null=True)
 
     def __str__(self):
-        return self.treatment + ' - ' + self.prescription
+        return f"{self.treatment} - {self.prescription}"
 
     class Meta:
         db_table = 'treatment'
         ordering = ('-created_at',)
+
+
+AS = {
+    (0, 'Hide'),
+    (1, 'Show')
+}
+
+
+class Announcement(models.Model):
+    image = models.FileField(upload_to='announce/', blank=True, null=True)
+    title = models.CharField(max_length=200, blank=True, null=True)
+    message = models.CharField(max_length=100000, blank=True, null=True)
+    status = models.IntegerField(choices=AS, blank=True, null=True)
+    created_at = models.DateTimeField(default=timezone.now)
+    created_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL,
+                                   related_name='announcements', blank=True, null=True)
+
+    def __str__(self):
+        return str(self.title)
+
+    class Meta:
+        db_table = 'announcement'
+        get_latest_by = 'created_at'
+        ordering = ('-created_at',)
+
+
+DEPARTMENTS = {
+    ('Ward', 'Ward'),
+    ('Pharmacy', 'Pharmacy'),
+    ('Account', 'Account'),
+    ('Management', 'Management'),
+    ('HR', 'Human Resource')
+}
+
+
+REQUEST_STATUS = {
+    (0, 'Pending'),
+    (1, 'Accepted'),
+    (2, 'Rejected'),
+}
+
+
+class Request(models.Model):
+    department = models.CharField(max_length=200, blank=True, null=True, choices=DEPARTMENTS)
+    description = models.TextField(max_length=5000, blank=True, null=True)
+    status = models.IntegerField(blank=True, null=True, choices=REQUEST_STATUS)
+    comment = models.CharField(blank=True, null=True, max_length=1000)
+    created_at = models.DateTimeField(default=timezone.now)
+    created_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL,
+                                   related_name='requests', blank=True, null=True)
+
+    def __str__(self):
+        return str(self.department)
+
+    class Meta:
+        db_table = 'request'
+
+
+class Expenditure(models.Model):
+    category = models.CharField(max_length=100, blank=True, null=True)
+    item = models.CharField(max_length=300, blank=True, null=True)
+    cost = models.DecimalField(max_digits=10, blank=True, null=True, decimal_places=2)
+    created_at = models.DateTimeField(default=timezone.now)
+    created_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL,
+                                   related_name='expenditures', blank=True, null=True)
+
+    def __str__(self):
+        return f"{self.category} - {self.item}"
+
+    class Meta:
+        db_table = 'expenditure'

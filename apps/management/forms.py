@@ -1,4 +1,6 @@
 from django.forms import *
+
+from apps.staff.models import Complaint
 from apps.user.models import *
 from .models import *
 
@@ -27,3 +29,10 @@ class WardForm(ModelForm):
     class Meta:
         model = Ward
         fields = ('label',)
+
+
+class ResolveComplaintForm(Form):
+    review = CharField(widget=Textarea(attrs={'required': True, 'rows':1, 'class': 'form-control', 'placeholder': 'Type your review here!'}))
+
+    class Meta:
+        fields = ('review',)

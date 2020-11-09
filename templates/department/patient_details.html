@@ -9,6 +9,11 @@
 {% block title %}
     {{ object.patient_id }}
 {% endblock %}
+{% block btn %}
+    {% if object.patient_type == 'Ward' or object.patient_type == 'OPD' %}
+        <a href="{% url 'department:patient-discharge' object.id %}" class="btn btn-sm btn-danger">Discharge</a>
+    {% endif %}
+{% endblock %}
 {% block content %}
     <div class="row">
         <div class="col-8">
@@ -22,7 +27,7 @@
                         </h5>
                     </div>
 
-                    <div id="collapseOne" class="collapse" aria-labelledby="headingOne" data-parent="#accordion">
+                    <div id="collapseOne" class="collapse show" aria-labelledby="headingOne" data-parent="#accordion">
                         <div class="card-body">
                             <div class="list-group">
                                 <div class="list-group-item">First Name:    {{ object.first_name }}</div>
@@ -43,7 +48,7 @@
                             </button>
                         </h5>
                     </div>
-                    <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordion">
+                    <div id="collapseTwo" class="collapse show" aria-labelledby="headingTwo" data-parent="#accordion">
                         <div class="card-body">
                             {% if object.weight %}
                                 <div class="list-group">

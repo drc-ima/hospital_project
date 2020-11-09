@@ -19,6 +19,8 @@
     <!-- Custom styles for this template-->
     <link href="{% static 'css/sb-admin-2.min.css' %}" rel="stylesheet">
 
+    <link href="{% static 'vendor/datatables/dataTables.bootstrap4.min.css' %}" rel="stylesheet">
+    {% block css %}{% endblock %}
 </head>
 
 <body id="page-top">
@@ -62,18 +64,23 @@
                 <span>Prescriptions</span></a>
         </li>
         <li class="nav-item {% block bill %}{% endblock %}">
-            <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapsePages" aria-expanded="true" aria-controls="collapsePages">
+            <a class="nav-link" href="{% url 'portal:bills' %}">
                 <i class="fas fa-fw fa-folder"></i>
-                <span>Bills</span>
-            </a>
-            <div id="collapsePages" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
-                <div class="bg-white py-2 collapse-inner rounded">
-                    <h6 class="collapse-header">All kinds of bills:</h6>
-                    <a class="collapse-item" href="login.html">Discharge</a>
-                    <a class="collapse-item" href="register.html">Test</a>
-                </div>
-            </div>
+                <span>Bills</span></a>
         </li>
+{#        <li class="nav-item {% block bill %}{% endblock %}">#}
+{#            <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapsePages" aria-expanded="true" aria-controls="collapsePages">#}
+{#                <i class="fas fa-fw fa-folder"></i>#}
+{#                <span>Bills</span>#}
+{#            </a>#}
+{#            <div id="collapsePages" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">#}
+{#                <div class="bg-white py-2 collapse-inner rounded">#}
+{#                    <h6 class="collapse-header">All kinds of bills:</h6>#}
+{#                    <a class="collapse-item" href="login.html">Discharge</a>#}
+{#                    <a class="collapse-item" href="register.html">Test</a>#}
+{#                </div>#}
+{#            </div>#}
+{#        </li>#}
 
         <!-- Divider -->
 
@@ -102,7 +109,7 @@
                     <i class="fa fa-bars"></i>
                 </button>
 
-                <a href="{% url 'apps' %}" class="btn btn-sm btn-google">APPS</a>
+                <a href="{% url 'apps' %}" class="btn btn-sm btn-primary">APPS</a>
                 <!-- Topbar Search -->
                 {#                <form class="d-none d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100 navbar-search">#}
                 {#                    <div class="input-group">#}
@@ -331,7 +338,7 @@
             <div class="modal-body">Select "Logout" below if you are ready to end your current session.</div>
             <div class="modal-footer">
                 <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
-                <a class="btn btn-primary" href="login.html">Logout</a>
+                <a class="btn btn-primary" href="{% url 'user:logout' %}">Logout</a>
             </div>
         </div>
     </div>
@@ -349,10 +356,13 @@
 
 <!-- Page level plugins -->
 <script src="{% static 'vendor/chart.js/Chart.min.js' %}"></script>
+<script src="{% static 'vendor/datatables/jquery.dataTables.min.js' %}"></script>
+<script src="{% static 'vendor/datatables/dataTables.bootstrap4.min.js' %}"></script>
 
 <!-- Page level custom scripts -->
 <script src="{% static 'js/demo/chart-area-demo.js' %}"></script>
 <script src="{% static 'js/demo/chart-pie-demo.js' %}"></script>
+<script src="{% static 'js/demo/datatables-demo.js' %}"></script>
 {% block js %}
 
 {% endblock %}
