@@ -18,6 +18,7 @@
 
     <!-- Custom styles for this template-->
     <link href="{% static 'css/sb-admin-2.min.css' %}" rel="stylesheet">
+    <link href="{% static 'vendor/datatables/dataTables.bootstrap4.min.css' %}" rel="stylesheet">
     {% block css %}{% endblock %}
 
 </head>
@@ -58,12 +59,12 @@
 
         <!-- Nav Item - Pages Collapse Menu -->
         <li class="nav-item {% block treat %}{% endblock %}">
-            <a class="nav-link" href="#">
+            <a class="nav-link" href="{% url 'pharmacy:treatments' %}">
                 <i class="fas fa-fw fa-credit-card"></i>
                 <span>Treatments</span></a>
         </li>
         <li class="nav-item {% block med %}{% endblock %}">
-            <a class="nav-link" href="#">
+            <a class="nav-link" href="{% url 'pharmacy:medicines' %}">
                 <i class="fas fa-fw fa-handshake"></i>
                 <span>Medicines</span></a>
         </li>
@@ -105,7 +106,7 @@
                     <i class="fa fa-bars"></i>
                 </button>
 
-                <a href="{% url 'apps' %}" class="btn btn-sm btn-google">APPS</a>
+                <a href="{% url 'apps' %}" class="btn btn-sm btn-success">APPS</a>
                 <!-- Topbar Search -->
 {#                <form class="d-none d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100 navbar-search">#}
 {#                    <div class="input-group">#}
@@ -352,10 +353,12 @@
 
 <!-- Page level plugins -->
 <script src="{% static 'vendor/chart.js/Chart.min.js' %}"></script>
-
+<script src="{% static 'vendor/datatables/jquery.dataTables.min.js' %}"></script>
+<script src="{% static 'vendor/datatables/dataTables.bootstrap4.min.js' %}"></script>
 <!-- Page level custom scripts -->
 <script src="{% static 'js/demo/chart-area-demo.js' %}"></script>
 <script src="{% static 'js/demo/chart-pie-demo.js' %}"></script>
+<script src="{% static 'js/demo/datatables-demo.js' %}"></script>
 {% block js %}
 
 {% endblock %}

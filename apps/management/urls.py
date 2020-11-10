@@ -20,4 +20,6 @@ urlpatterns = [
     path('request/add/', MakeRequest.as_view(), name='request-add'),
     path('requests/', Requests.as_view(), name='requests'),
     path('request/<request_id>/', ChangeRequestStatus.as_view(), name='change-request-status'),
+    path('expenditure/', Expenditures.as_view(), name='expenditures'),
+    path('medicine/add/', AddMedicine.as_view(), name='medicine-add'),
 ]

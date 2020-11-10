@@ -18,6 +18,7 @@
 
     <!-- Custom styles for this template-->
     <link href="{% static 'css/sb-admin-2.min.css' %}" rel="stylesheet">
+    <link href="{% static 'vendor/datatables/dataTables.bootstrap4.min.css' %}" rel="stylesheet">
     {% block css %}{% endblock %}
 
 </head>
@@ -65,7 +66,7 @@
             <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
                 <div class="bg-white py-2 collapse-inner rounded">
                     <h6 class="collapse-header">Overview:</h6>
-                    <a class="collapse-item {% block exp %}{% endblock %}" href="#">Expenditure</a>
+                    <a class="collapse-item {% block exp %}{% endblock %}" href="{% url 'management:expenditures' %}">Expenditure</a>
                     <a class="collapse-item {% block rev %}{% endblock %}" href="#">Revenue</a>
                     <a class="collapse-item {% block rem %}{% endblock %}" href="#">Remuneration</a>
                     <a class="collapse-item {% block req %}{% endblock %}" href="{% url 'management:requests' %}">Requests</a>
@@ -362,10 +363,13 @@
 
 <!-- Page level plugins -->
 <script src="{% static 'vendor/chart.js/Chart.min.js' %}"></script>
+<script src="{% static 'vendor/datatables/jquery.dataTables.min.js' %}"></script>
+<script src="{% static 'vendor/datatables/dataTables.bootstrap4.min.js' %}"></script>
 
 <!-- Page level custom scripts -->
 <script src="{% static 'js/demo/chart-area-demo.js' %}"></script>
 <script src="{% static 'js/demo/chart-pie-demo.js' %}"></script>
+<script src="{% static 'js/demo/datatables-demo.js' %}"></script>
 {% block js %}
 
 {% endblock %}
