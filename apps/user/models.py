@@ -52,6 +52,14 @@ ROLES = {
 }
 
 
+STATUS = {
+    ('On Leave', 'On Leave'),
+    ('Active', 'Active'),
+    ('Suspended', 'Suspended'),
+    ('Dismissed', 'Dismissed'),
+}
+
+
 class User(AbstractBaseUser, PermissionsMixin):
     username = models.CharField(
         max_length=255,
@@ -70,6 +78,8 @@ class User(AbstractBaseUser, PermissionsMixin):
         blank=True,
         null=True,
     )
+
+    status = models.CharField(max_length=100, blank=True, null=True, choices=STATUS)
 
     role = models.CharField(
         choices=ROLES,

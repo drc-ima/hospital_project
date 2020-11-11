@@ -250,3 +250,22 @@ class Expenditure(models.Model):
 
     class Meta:
         db_table = 'expenditure'
+
+
+class LeavePeriod(models.Model):
+    start_date = models.DateField(blank=True, null=True)
+    end_date = models.DateField(blank=True, null=True)
+    number_of_days = models.IntegerField(blank=True, null=True, default=0)
+    days_allowed = models.IntegerField(blank=True, null=True, default=0)
+    staffs = models.ManyToManyField('staff.Staff', related_name='leave_period_staffs',
+                                    blank=True)
+    created_at = models.DateTimeField(default=timezone.now)
+    created_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL,
+                                   related_name='leave_periods', blank=True, null=True)
+
+    def __str__(self):
+        return f"{self.start_date} - {self.end_date}"
+
+    class Meta:
+        db_table = 'leave_period'
+        ordering = ('-created_at',)

@@ -1,3 +1,5 @@
+import datetime
+
 from django.forms import *
 
 from apps.staff.models import Complaint
@@ -36,3 +38,31 @@ class ResolveComplaintForm(Form):
 
     class Meta:
         fields = ('review',)
+
+
+class LeavePeriodForm(ModelForm):
+
+    class Meta:
+        model = LeavePeriod
+        fields = ('start_date', 'end_date', 'days_allowed')
+        widgets = {
+            'start_date': DateInput(attrs={'type': 'date', 'required': True}),
+            'end_date': DateInput(attrs={'type': 'date', 'required': True})
+        }
+
+    def clean_end_date(self):
+        end_date = self.cleaned_data.get('end_date')
+        # convert end_date to a datetime type without the time data
+        # Import datetime at the top
+        date1 = datetime.datetime.strptime(end_date, "%Y-%m-%d")
+
+        # check if any leave period object does not match the end_date year of the new one
+        try:
+            LeavePeriod.objects.get(end_date__year=date1.year)
+            # raise error if try passes
+            raise ValidationError('This Leave Period already exists')
+        except LeavePeriod.DoesNotExist:
+            pass
+
+        return end_date
+

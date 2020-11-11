@@ -48,6 +48,10 @@ class PrescribedMedicine(models.Model):
 
     prescription = models.ForeignKey('Prescription', on_delete=models.SET_NULL,
                                      related_name='prescribed_medicine_prescription', blank=True, null=True)
+    dosage = models.CharField(max_length=2000, blank=True, null=True)
+    frequency = models.CharField(max_length=200, blank=True, null=True)
+    quantity = models.IntegerField(blank=True, null=True)
+    amount = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True, default=0)
     created_at = models.DateTimeField(default=timezone.now)
     created_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL,
                                    related_name='prescribed_medicines', blank=True, null=True)
@@ -60,16 +64,17 @@ class PrescribedMedicine(models.Model):
 
 
 PRES_STATUS = {
-    (1, 'Paid'),
-    (0, 'Not Paid')
+    # (1, 'Paid'),
+    # (0, 'Not Paid'),
+    (1, 'Confirmed'),
+    (0, 'Pending')
 }
 
 
 class Prescription(models.Model):
     prescription_id = models.CharField(max_length=200, blank=True, null=True)
     medicines = models.ManyToManyField(PrescribedMedicine, related_name='prescription_medicines', blank=True)
-    dosage = models.CharField(max_length=2000, blank=True, null=True)
-    frequency = models.CharField(max_length=200, blank=True, null=True)
+
     patient = models.ForeignKey('management.Patient', on_delete=models.SET_NULL, related_name='prescription_patient',
                                 blank=True, null=True)
     treatment = models.ForeignKey('management.Treatment', on_delete=models.SET_NULL,

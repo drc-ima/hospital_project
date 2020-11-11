@@ -1,15 +1,17 @@
+import datetime
+
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpResponseRedirect
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
 from django.views.generic import *
 
 from apps.pharmacy.models import Medicine
 from apps.portal.models import DefaultBill
-from apps.staff.models import Complaint
+from apps.staff.models import *
 from .models import *
-from apps.management.forms import UserForm
+from apps.management.forms import UserForm, LeavePeriodForm
 from apps.user.models import User
 
 
@@ -322,3 +324,111 @@ class AddMedicine(LoginRequiredMixin, RedirectView):
         )
 
         return super(AddMedicine, self).post(self, request, *args, **kwargs)
+
+
+# class base view
+class NewLeavePeriod(LoginRequiredMixin, CreateView):
+    template_name = 'management/leave_period_new.html'
+    success_url = reverse_lazy('management:hr')
+    form_class = LeavePeriodForm
+    queryset = LeavePeriod.objects.all()
+
+    def form_valid(self, form):
+        valid = super(NewLeavePeriod, self).form_valid(form)
+
+        # get number of days
+        nod = (form.instance.end_date - form.instance.start_date).days
+        form.instance.number_of_days = nod
+
+        # get all user objects
+        users = User.objects.all()
+        # convert end_date to a datetime type without the time data
+        # Import datetime at the top
+        date1 = datetime.datetime.strptime(form.instance.end_date, "%Y-%m-%d")
+
+        # leave_period = LeavePeriod.objects.get(end_date__year=date1.year)
+        # looping through all the users
+        for user in users:
+            # initiate leave days left
+            days_left = 0
+            try:
+                # try to get the latest staff object by excluding this new leave period
+                # Add get_latest_by to the class Meta of the Staff model
+                latest = Staff.objects.filter(user=user).exclude(leave_period=form.instance).latest()
+                # use the latest to get the remaining days of the staff
+                days_left = latest.number_of_days_left
+            except Staff.DoesNotExist:
+                pass
+            # create the staff with the user iterator
+            staff = Staff.objects.create(
+                user=user,
+                leave_period=form.instance,
+                created_by=self.request.user,
+                total_number_of_days= days_left + int(form.instance.days_allowed),
+                number_of_days_left= days_left + int(form.instance.days_allowed),
+            )
+
+            # staff.save()
+            # add the staff instance to the leave period staffs m2m field
+            form.instance.staffs.add(staff)
+        form.instance.created_by = self.request.user
+        form.save()
+
+        return valid
+
+
+# function base view
+@login_required()
+def new_leave_period(request):
+    form = LeavePeriodForm
+
+    context = {
+        'form': form
+    }
+
+    if request.method == 'POST':
+        form = LeavePeriodForm(request.POST)
+
+        if form.is_valid():
+            nod = (form.instance.end_date - form.instance.start_date).days
+            form.instance.number_of_days = nod
+
+            # get all user objects
+            users = User.objects.all()
+            # convert end_date to a datetime type without the time data
+            # Import datetime at the top
+            date1 = datetime.datetime.strptime(form.instance.end_date, "%Y-%m-%d")
+
+            # leave_period = LeavePeriod.objects.get(end_date__year=date1.year)
+            # looping through all the users
+            for user in users:
+                # initiate leave days left
+                days_left = 0
+                try:
+                    # try to get the latest staff object by excluding this new leave period
+                    # Add get_latest_by to the class Meta of the Staff model
+                    latest = Staff.objects.filter(user=user).exclude(leave_period=form.instance).latest()
+                    # use the latest to get the remaining days of the staff
+                    days_left = latest.number_of_days_left
+                except Staff.DoesNotExist:
+                    pass
+                # create the staff with the user iterator
+                staff = Staff.objects.create(
+                    user=user,
+                    leave_period=form.instance,
+                    created_by=request.user,
+                    total_number_of_days=days_left + int(form.instance.days_allowed),
+                    number_of_days_left=days_left + int(form.instance.days_allowed),
+                )
+
+                # staff.save()
+                # add the staff instance to the leave period staffs m2m field
+                form.instance.staffs.add(staff)
+            form.instance.created_by = request.user
+            form.save()
+            # if no errors route to the HR page
+            return redirect(reverse_lazy('management:hr'))
+
+    return render(request, template_name='management/leave_period_new.html', context=context)
+
+
