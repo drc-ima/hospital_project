@@ -57,12 +57,14 @@ def treatment_details(request, id):
                                                 patient_id=treatment.diagnosis.patient.id)
     except Prescription.DoesNotExist:
         pass
-
-    medicines = Medicine.objects.exclude(units_left=0)
-
+    medicines = None
     total = 0
-    for pm in prescription.medicines.all():
-        total += pm.amount
+    try:
+        medicines = Medicine.objects.exclude(units_left=0)
+        for pm in prescription.medicines.all():
+            total += pm.amount
+    except:
+        pass
 
     context = {
         'object': treatment,
