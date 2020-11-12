@@ -54,11 +54,11 @@ class LeavePeriodForm(ModelForm):
         end_date = self.cleaned_data.get('end_date')
         # convert end_date to a datetime type without the time data
         # Import datetime at the top
-        date1 = datetime.datetime.strptime(end_date, "%Y-%m-%d")
+        # date1 = datetime.datetime.strptime(end_date, "%Y-%m-%d")
 
         # check if any leave period object does not match the end_date year of the new one
         try:
-            LeavePeriod.objects.get(end_date__year=date1.year)
+            LeavePeriod.objects.get(end_date__year=end_date.year)
             # raise error if try passes
             raise ValidationError('This Leave Period already exists')
         except LeavePeriod.DoesNotExist:

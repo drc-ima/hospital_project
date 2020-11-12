@@ -171,12 +171,21 @@ class UpdateBill(LoginRequiredMixin, RedirectView):
 @login_required()
 def hr(request):
     all_complaint = Complaint.objects.all().exclude(status=2)
+    leave_periods = LeavePeriod.objects.all()
 
     context = {
-        'complaints': all_complaint
+        'complaints': all_complaint,
+        'leave_periods': leave_periods
     }
 
     return render(request, template_name='management/hr.html', context=context)
+
+
+class LeavePeriodDetails(LoginRequiredMixin, DetailView):
+    template_name = 'management/leave_period_details.html'
+    queryset = LeavePeriod.objects.all()
+    model = LeavePeriod
+    pk_url_kwarg = 'id'
 
 
 @login_required()
@@ -344,7 +353,7 @@ class NewLeavePeriod(LoginRequiredMixin, CreateView):
         users = User.objects.all()
         # convert end_date to a datetime type without the time data
         # Import datetime at the top
-        date1 = datetime.datetime.strptime(form.instance.end_date, "%Y-%m-%d")
+        # date1 = datetime.datetime.strptime(form.instance.end_date, "%Y-%m-%d")
 
         # leave_period = LeavePeriod.objects.get(end_date__year=date1.year)
         # looping through all the users

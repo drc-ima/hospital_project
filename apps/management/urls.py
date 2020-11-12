@@ -22,4 +22,6 @@ urlpatterns = [
     path('request/<request_id>/', ChangeRequestStatus.as_view(), name='change-request-status'),
     path('expenditure/', Expenditures.as_view(), name='expenditures'),
     path('medicine/add/', AddMedicine.as_view(), name='medicine-add'),
+    path('leave-period/add/', NewLeavePeriod.as_view(), name='leave-period-new'),
+    path('leave/period/<id>/', LeavePeriodDetails.as_view(), name='leave-period-details')
 ]

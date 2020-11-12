@@ -4,6 +4,7 @@ from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
 
 from apps.management.models import *
+from apps.portal.models import Bill
 from .models import *
 # Create your views here.
 from django.views.generic import *
@@ -157,4 +158,32 @@ class RemovePrescribedMedicine(LoginRequiredMixin, RedirectView):
         return super(RemovePrescribedMedicine, self).get(self, request, *args, **kwargs)
         
         
-        
+class ConfirmPrescription(LoginRequiredMixin, RedirectView):
+    def get_redirect_url(self, *args, **kwargs):
+        return reverse_lazy('pharmacy:treatment-details', kwargs={'id': kwargs.get('treatment_id')})
+
+    def get(self, request, *args, **kwargs):
+        prescription = Prescription.objects.get(id=kwargs.get('pres_id'))
+        treatment = Treatment.objects.get(id=kwargs.get('treatment_id'))
+
+        total = 0
+
+        for pm in prescription.medicines.all():
+            total += pm.amount
+
+        bill = Bill.objects.create(
+            bill_type='PhB',
+            patient=treatment.diagnosis.patient,
+            amount=total,
+            status=0,
+            prescription=prescription,
+            created_by=self.request.user
+        )
+
+        prescription.total = total
+
+        prescription.status = 1
+
+        prescription.save()
+
+        return super(ConfirmPrescription, self).get(self, request, *args, **kwargs)

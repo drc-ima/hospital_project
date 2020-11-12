@@ -59,6 +59,7 @@ LEAVE_STATUS = {
     (2, 'Rejected')
 }
 
+
 class Leave(models.Model):
     staff = models.ForeignKey(Staff, on_delete=models.SET_NULL,
                               related_name='leave_staff', blank=True, null=True)

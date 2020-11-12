@@ -27,6 +27,8 @@ class Bill(models.Model):
                                 related_name='bill_patient', blank=True, null=True)
     amount = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
     number_of_days = models.IntegerField(blank=True, null=True)
+    prescription = models.ForeignKey('pharmacy.Prescription', on_delete=models.SET_NULL,
+                                     related_name='bill_prescription', blank=True, null=True)
     status = models.IntegerField(blank=True, null=True, choices=STATUS)
     created_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, related_name='bills',
                                    blank=True, null=True)

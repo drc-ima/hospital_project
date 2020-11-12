@@ -80,13 +80,14 @@ class Prescription(models.Model):
     treatment = models.ForeignKey('management.Treatment', on_delete=models.SET_NULL,
                                   related_name='prescription_treatment', blank=True, null=True)
     total = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
+    is_paid = models.BooleanField(blank=True, null=True, default=False)
     status = models.IntegerField(blank=True, null=True, choices=PRES_STATUS)
     created_at = models.DateTimeField(default=timezone.now)
     created_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL,
                                    related_name='prescriptions', blank=True, null=True)
 
     def __str__(self):
-        return str(self.prescription_id)
+        return str(self.patient.full_name())
 
     class Meta:
         db_table = 'prescription'
