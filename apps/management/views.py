@@ -186,6 +186,11 @@ class LeavePeriodDetails(LoginRequiredMixin, DetailView):
     queryset = LeavePeriod.objects.all()
     model = LeavePeriod
     pk_url_kwarg = 'id'
+    
+    def get_context_data(self, **kwargs):
+        context = super(LeavePeriodDetails, self).get_context_data(**kwargs)
+        context['leaves'] = Leave.objects.all()
+        return context
 
 
 @login_required()

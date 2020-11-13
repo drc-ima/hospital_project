@@ -46,7 +46,7 @@ class Staff(models.Model):
                                    related_name='staffs', blank=True, null=True)
 
     def __str__(self):
-        return f"{self.user.full_name} - {self.number_of_days_left}"
+        return f"{self.user.full_name()} - {self.number_of_days_left}"
 
     class Meta:
         db_table = 'staff'
@@ -67,6 +67,7 @@ class Leave(models.Model):
     end_date = models.DateField(blank=True, null=True)
     number_of_days = models.IntegerField(blank=True, null=True, default=0)
     status = models.IntegerField(choices=LEAVE_STATUS, blank=True, null=True)
+    purpose = models.CharField(max_length=1000, blank=True, null=True)
     created_at = models.DateTimeField(default=timezone.now)
     created_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL,
                                    related_name='leaves', blank=True, null=True)
