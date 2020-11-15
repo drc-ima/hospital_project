@@ -56,6 +56,9 @@ class LeaveForm(forms.ModelForm):
 
         # check if the dates selected are not between previous leave periods
         for leave in leaves.all():
+            if leave.start_date > start_date:
+                raise ValidationError('Invalid start date selected')
+
             if leave.start_date <= start_date and leave.end_date >= end_date:
                 raise ValidationError('You already have a leave request between the dates selected')
 
