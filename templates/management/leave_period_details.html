@@ -63,12 +63,14 @@
                                 <div class="row">
                                 <div class="col-10"></div>
                                 <div class="col-2">
-                                    <a href="" class="btn btn-sm btn-light">
-                                        <i class="fa text-success fa-check"></i>
-                                    </a>
-                                    <a href="" class="btn btn-sm btn-light">
-                                        <i class="fa text-danger fa-ban"></i>
-                                    </a>
+                                    {% if leave.status == 0 %}
+                                        <a title="Approve request" href="{% url 'management:leave-request-status' lpid=object.id lid=leave.id status=1 %}" class="btn btn-sm btn-light">
+                                            <i class="fa text-success fa-check"></i>
+                                        </a>
+                                        <a title="Reject request" href="{% url 'management:leave-request-status' lpid=object.id lid=leave.id status=2 %}" class="btn btn-sm btn-light">
+                                            <i class="fa text-danger fa-ban"></i>
+                                        </a>
+                                    {% endif %}
                                 </div>
                             </div>
                             </div>

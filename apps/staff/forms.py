@@ -41,7 +41,7 @@ class LeaveForm(forms.ModelForm):
 
         # checking to ensure end date is not less than start date
         if end_date < start_date:
-            raise ValidationError('End Date is more than Start Date selected')
+            raise ValidationError('End Date is less than Start Date selected')
 
         # checking to ensure end date is not the same as start date
         if end_date == start_date:
@@ -51,10 +51,12 @@ class LeaveForm(forms.ModelForm):
         if staff.number_of_days_left < no_of_days:
             raise ValidationError('The number of days selected are more than your number of leave days remaining')
 
-        try:
-            Leave.objects.get(created_by=self.request.user, start_date__range=(start_date, end_date), end_date__range=(start_date, end_date), staff=staff)
-            raise ValidationError('You already have a leave request between the dates selected')
-        except Leave.DoesNotExist:
-            pass
+        # get staff current period leave requests
+        leaves = Leave.objects.filter(staff=staff)
+
+        # check if the dates selected are not between previous leave periods
+        for leave in leaves.all():
+            if leave.start_date <= start_date and leave.end_date >= end_date:
+                raise ValidationError('You already have a leave request between the dates selected')
 
         return self.cleaned_data

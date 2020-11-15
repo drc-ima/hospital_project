@@ -23,5 +23,6 @@ urlpatterns = [
     path('expenditure/', Expenditures.as_view(), name='expenditures'),
     path('medicine/add/', AddMedicine.as_view(), name='medicine-add'),
     path('leave-period/add/', NewLeavePeriod.as_view(), name='leave-period-new'),
-    path('leave/period/<id>/', LeavePeriodDetails.as_view(), name='leave-period-details')
+    path('leave/period/<id>/', LeavePeriodDetails.as_view(), name='leave-period-details'),
+    path('leave/status/<lpid>/<lid>/<status>/', LeaveRequestStatus.as_view(), name='leave-request-status'),
 ]

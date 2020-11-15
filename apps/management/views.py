@@ -124,14 +124,14 @@ class AddBill(LoginRequiredMixin, RedirectView):
         bill_type = request.POST.get('bill_type')
         service = request.POST.get('service')
         amount = request.POST.get('amount')
-        
+
         new_default_bill = DefaultBill.objects.create(
             bill_type=bill_type,
             service=service if service else '',
             amount=amount,
             created_by=self.request.user
         )
-        
+
         return super(AddBill, self).post(self, request, *args, **kwargs)
 
 
@@ -186,7 +186,7 @@ class LeavePeriodDetails(LoginRequiredMixin, DetailView):
     queryset = LeavePeriod.objects.all()
     model = LeavePeriod
     pk_url_kwarg = 'id'
-    
+
     def get_context_data(self, **kwargs):
         context = super(LeavePeriodDetails, self).get_context_data(**kwargs)
         context['leaves'] = Leave.objects.all()
@@ -378,8 +378,8 @@ class NewLeavePeriod(LoginRequiredMixin, CreateView):
                 user=user,
                 leave_period=form.instance,
                 created_by=self.request.user,
-                total_number_of_days= days_left + int(form.instance.days_allowed),
-                number_of_days_left= days_left + int(form.instance.days_allowed),
+                total_number_of_days=days_left + int(form.instance.days_allowed),
+                number_of_days_left=days_left + int(form.instance.days_allowed),
             )
 
             # staff.save()
@@ -446,3 +446,30 @@ def new_leave_period(request):
     return render(request, template_name='management/leave_period_new.html', context=context)
 
 
+class LeaveRequestStatus(LoginRequiredMixin, RedirectView):
+
+    def get_redirect_url(self, *args, **kwargs):
+        return reverse_lazy('management:leave-period-details', kwargs={'id': kwargs.get('lpid')})
+
+    def get(self, request, *args, **kwargs):
+        status = int(kwargs.get('status'))
+        leave_id = kwargs.get('lid')
+
+        # leave = None
+        try:
+            leave = Leave.objects.get(id=leave_id, status=0)
+        except Leave.DoesNotExist:
+            return super(LeaveRequestStatus, self).get(request, *args, **kwargs)
+
+        if status == 1:
+            staff = leave.staff
+            staff.number_of_days_left -= leave.number_of_days
+            staff.number_of_days_used += leave.number_of_days
+            leave.status = 1
+            staff.save()
+        else:
+            leave.status = 2
+
+        leave.save()
+
+        return super(LeaveRequestStatus, self).get(request, *args, **kwargs)
