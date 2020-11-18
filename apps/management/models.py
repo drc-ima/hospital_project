@@ -269,3 +269,30 @@ class LeavePeriod(models.Model):
     class Meta:
         db_table = 'leave_period'
         ordering = ('-created_at',)
+
+
+STREAMS = {
+    ('Government', 'Government'),
+    ('Patient', 'Patient'),
+    ('Donation', 'Donation'),
+}
+
+
+class Revenue(models.Model):
+    stream = models.CharField(max_length=100, blank=True, null=True, choices=STREAMS)
+    bill = models.ForeignKey('portal.Bill', on_delete=models.SET_NULL,
+                             related_name='revenue_bill', blank=True, null=True)
+    patient = models.ForeignKey(Patient, on_delete=models.SET_NULL,
+                                related_name='revenue_patient', blank=True, null=True)
+    description = models.CharField(max_length=100, blank=True, null=True)
+    amount = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
+    created_at = models.DateTimeField(blank=True, null=True)
+    created_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL,
+                                   related_name='revenues', blank=True, null=True)
+
+    def __str__(self):
+        return str(self.stream)
+
+    class Meta:
+        db_table = 'revenue'
+        ordering = ('-created_at',)

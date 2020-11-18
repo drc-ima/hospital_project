@@ -11,13 +11,50 @@ from apps.pharmacy.models import Medicine
 from apps.portal.models import DefaultBill
 from apps.staff.models import *
 from .models import *
-from apps.management.forms import UserForm, LeavePeriodForm
+from apps.management.forms import UserForm, LeavePeriodForm, RevenueForm
 from apps.user.models import User
 
 
 @login_required()
 def dashboard(request):
-    return render(request=request, template_name='management/dashboard.html')
+    wards = Ward.objects.count()
+    beds = Bed.objects.count()
+    exps = Expenditure.objects.all()
+    total_exp = 0
+
+    for exp in exps.all():
+        total_exp += exp.cost
+
+    revs = Revenue.objects.all()
+
+    total_rev = 0
+
+    for rev in revs.all():
+        total_rev += rev.amount
+
+    staffs = User.objects.count()
+
+    current_year = timezone.now().year
+    years = [(current_year + year, current_year + year) for year in range(51)]
+
+    # for year in range(51):
+    #     years.append((current_year + year, current_year + year))
+
+    active_staffs = User.objects.filter(status='Active').count()
+    inactive_staffs = User.objects.exclude(status='Active').count()
+
+    context = {
+        'wards': wards,
+        'beds': beds,
+        'expenditure': total_exp,
+        'revenue': total_rev,
+        'staff': staffs,
+        'active': active_staffs,
+        'inactive': inactive_staffs,
+        'years': years,
+        'current_year': current_year,
+    }
+    return render(request=request, template_name='management/dashboard.html', context=context)
 
 
 @login_required()
@@ -473,3 +510,26 @@ class LeaveRequestStatus(LoginRequiredMixin, RedirectView):
         leave.save()
 
         return super(LeaveRequestStatus, self).get(request, *args, **kwargs)
+
+
+class Revenues(LoginRequiredMixin, CreateView):
+    template_name = 'management/revenue.html'
+    form_class = RevenueForm
+    success_url = reverse_lazy('management:revenues')
+    queryset = Revenue.objects.all()
+
+    def form_valid(self, form):
+        valid = super(Revenues, self).form_valid(form)
+
+        form.instance.created_by = self.request.user
+
+        form.save()
+
+        return valid
+
+    def get_context_data(self, **kwargs):
+        context = super(Revenues, self).get_context_data(**kwargs)
+
+        context['object_list'] = Revenue.objects.all()
+
+        return context

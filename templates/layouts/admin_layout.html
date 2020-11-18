@@ -67,7 +67,7 @@
                 <div class="bg-white py-2 collapse-inner rounded">
                     <h6 class="collapse-header">Overview:</h6>
                     <a class="collapse-item {% block exp %}{% endblock %}" href="{% url 'management:expenditures' %}">Expenditure</a>
-                    <a class="collapse-item {% block rev %}{% endblock %}" href="#">Revenue</a>
+                    <a class="collapse-item {% block rev %}{% endblock %}" href="{% url 'management:revenues' %}">Revenue</a>
                     <a class="collapse-item {% block rem %}{% endblock %}" href="#">Remuneration</a>
                     <a class="collapse-item {% block req %}{% endblock %}" href="{% url 'management:requests' %}">Requests</a>
                 </div>

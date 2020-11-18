@@ -8,7 +8,7 @@ from .models import User
 class UserAdmin(DjangoUserAdmin):
     fieldsets = (
         (_('Login'), {'fields': ('staff_id', 'username', 'password')}),
-        (_('Personal Info'), {'fields': ('first_name', 'last_name', 'user_type', 'role')}),
+        (_('Personal Info'), {'fields': ('first_name', 'last_name', 'user_type', 'role', 'status')}),
         (_('Permissions'), {'fields': ('is_active', 'is_staff', 'is_superuser', 'groups', 'user_permissions')}),
         (_('Important Dates'), {'fields': ('last_login', 'date_joined')})
     )

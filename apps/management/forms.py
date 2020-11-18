@@ -66,3 +66,20 @@ class LeavePeriodForm(ModelForm):
 
         return end_date
 
+
+class RevenueForm(ModelForm):
+    class Meta:
+        model = Revenue
+        fields = ('stream', 'description', 'amount')
+
+    STREAMS = {
+        ('', '------------'),
+        ('Government', 'Government'),
+        ('Donation', 'Donation')
+    }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['stream'].choices = self.STREAMS
+
+

@@ -4,7 +4,7 @@ from django.shortcuts import render
 from django.urls import reverse_lazy
 from django.views.generic import *
 
-from apps.management.models import Patient
+from apps.management.models import Patient, Revenue
 from .models import *
 
 
@@ -18,6 +18,7 @@ class Bills(LoginRequiredMixin, ListView):
     queryset = Bill.objects.all()
 
 
+# This view is to confirm patient card payment bills
 class ConfirmPayment(LoginRequiredMixin, RedirectView):
     # url = reverse_lazy('portal:bills')
 
@@ -33,6 +34,16 @@ class ConfirmPayment(LoginRequiredMixin, RedirectView):
 
         bill.save()
 
+        Revenue.objects.create(
+            bill=bill,
+            patient=bill.patient,
+            amount=bill.amount,
+            stream='Patient',
+            description='Patient Card Payment',
+            created_at=timezone.now(),
+            created_by=request.user
+        )
+
         return super(ConfirmPayment, self).get(self, request, *args, **kwargs)
 
 
@@ -43,6 +54,7 @@ class PatientCard(LoginRequiredMixin, DetailView):
     pk_url_kwarg = 'id'
 
 
+# This view is for patient ward bills payment
 class ConfirmDischarge(LoginRequiredMixin, RedirectView):
     # url = reverse_lazy('portal:bills')
     def get_redirect_url(self, *args, **kwargs):
@@ -79,6 +91,16 @@ class ConfirmDischarge(LoginRequiredMixin, RedirectView):
 
         bill.status = 1
         bill.save()
+
+        Revenue.objects.create(
+            bill=bill,
+            patient=bill.patient,
+            amount=bill.amount,
+            stream='Patient',
+            description='Patient Ward Bill Payment',
+            created_at=timezone.now(),
+            created_by=request.user
+        )
         
         return super(ConfirmDischarge, self).get(self, request, *args, **kwargs)
 
@@ -117,6 +139,7 @@ def bill_details(request, uuid):
     return render(request, template_name='portal/bill_details.html', context=context)
 
 
+# This view is to confirm patient prescription payment
 class ConfirmPrescriptionBill(LoginRequiredMixin, RedirectView):
 
     def get_redirect_url(self, *args, **kwargs):
@@ -131,5 +154,15 @@ class ConfirmPrescriptionBill(LoginRequiredMixin, RedirectView):
 
         bill.prescription.save()
         bill.save()
+
+        Revenue.objects.create(
+            bill=bill,
+            patient=bill.patient,
+            amount=bill.amount,
+            stream='Patient',
+            description='Patient Prescription Payment',
+            created_at=timezone.now(),
+            created_by=request.user
+        )
 
         return super(ConfirmPrescriptionBill, self).get(self, request, *args, **kwargs)
