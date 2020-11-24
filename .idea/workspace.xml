@@ -3,9 +3,6 @@
   <component name="ChangeListManager">
     <list default="true" id="d00f4ca0-8eb9-4e8a-a503-4846ac188277" name="Default" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Pipfile" beforeDir="false" afterPath="$PROJECT_DIR$/Pipfile" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Pipfile.lock" beforeDir="false" afterPath="$PROJECT_DIR$/Pipfile.lock" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ai_hospital/settings.py" beforeDir="false" afterPath="$PROJECT_DIR$/ai_hospital/settings.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -73,8 +70,8 @@
       <file leaf-file-name="local_settings.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/ai_hospital/local_settings.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-627">
-              <caret line="14" column="71" selection-start-line="14" selection-start-column="71" selection-end-line="14" selection-end-column="71" />
+            <state relative-caret-position="74">
+              <caret line="49" column="52" selection-start-line="49" selection-start-column="52" selection-end-line="49" selection-end-column="52" />
             </state>
           </provider>
         </entry>
@@ -467,7 +464,14 @@
       <option name="project" value="LOCAL" />
       <updated>1606228841487</updated>
     </task>
-    <option name="localTasksCounter" value="15" />
+    <task id="LOCAL-00015" summary="final push before heroku">
+      <created>1606234056887</created>
+      <option name="number" value="00015" />
+      <option name="presentableId" value="LOCAL-00015" />
+      <option name="project" value="LOCAL" />
+      <updated>1606234056888</updated>
+    </task>
+    <option name="localTasksCounter" value="16" />
     <servers />
   </component>
   <component name="TodoView">
@@ -488,8 +492,8 @@
       <window_info anchor="bottom" id="Version Control" order="8" weight="0.29032257" />
       <window_info anchor="bottom" id="Python Console" order="11" />
       <window_info anchor="bottom" id="Run" order="2" weight="0.18387097" />
-      <window_info active="true" anchor="bottom" id="Terminal" order="12" visible="true" weight="0.3532258" />
-      <window_info content_ui="combo" id="Project" order="2" sideWeight="0.49759614" weight="0.40695915" />
+      <window_info anchor="bottom" id="Terminal" order="12" visible="true" weight="0.12419355" />
+      <window_info active="true" content_ui="combo" id="Project" order="2" sideWeight="0.49759614" visible="true" weight="0.20801815" />
       <window_info anchor="bottom" id="Docker" order="7" show_stripe_button="false" />
       <window_info anchor="bottom" id="manage.py@ai_hospital" order="10" weight="0.36451614" />
       <window_info anchor="right" id="Database" order="4" weight="0.14372164" />
@@ -978,8 +982,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/ai_hospital/local_settings.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-627">
-          <caret line="14" column="71" selection-start-line="14" selection-start-column="71" selection-end-line="14" selection-end-column="71" />
+        <state relative-caret-position="74">
+          <caret line="49" column="52" selection-start-line="49" selection-start-column="52" selection-end-line="49" selection-end-column="52" />
         </state>
       </provider>
     </entry>
