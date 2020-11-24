@@ -97,6 +97,28 @@ MARITAL = {
 }
 
 
+class VitalSign(models.Model):
+    patient = models.ForeignKey('Patient', on_delete=models.SET_NULL,
+                                related_name='vital_sign_patient', blank=True, null=True)
+    time = models.TimeField(default=timezone.now)
+    weight = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
+    diastolic = models.IntegerField(blank=True, null=True)
+    systolic = models.IntegerField(blank=True, null=True)
+    respiration = models.IntegerField(blank=True, null=True)
+    temperature = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
+    pulse = models.IntegerField(blank=True, null=True)
+    created_at = models.DateTimeField(default=timezone.now)
+    created_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL,
+                                   related_name='vital_signs', blank=True, null=True)
+
+    class Meta:
+        db_table = 'vital_sign'
+        ordering = ('-time',)
+
+    def __str__(self):
+        return f"{self.patient.full_name()} - {self.time}"
+
+
 class Patient(models.Model):
     patient_id = models.CharField(default=generate, unique=True, editable=False, max_length=100)
     first_name = models.CharField(max_length=100, blank=True, null=True)
@@ -110,10 +132,7 @@ class Patient(models.Model):
     time_discharged = models.TimeField(blank=True, null=True)
     date_discharged = models.DateField(blank=True, null=True)
     bed = models.ForeignKey(Bed, on_delete=models.SET_NULL, related_name='patient_bed', blank=True, null=True)
-    weight = models.CharField(max_length=10, blank=True, null=True)
-    bp = models.CharField(max_length=100, blank=True, null=True)
-    respiration = models.CharField(max_length=100, blank=True, null=True)
-    temperature = models.CharField(max_length=100, blank=True, null=True)
+    vital_signs = models.ManyToManyField(VitalSign, related_name='patient_vital_signs', blank=True)
     diagnoses = models.ManyToManyField('MedicalDiagnosis', related_name='patient_diagnoses', blank=True)
     notes = models.ManyToManyField('department.Note', related_name='patient_notes', blank=True)
     created_at = models.DateTimeField(default=timezone.now)
@@ -286,7 +305,7 @@ class Revenue(models.Model):
                                 related_name='revenue_patient', blank=True, null=True)
     description = models.CharField(max_length=100, blank=True, null=True)
     amount = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
-    created_at = models.DateTimeField(blank=True, null=True)
+    created_at = models.DateTimeField(default=timezone.now)
     created_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL,
                                    related_name='revenues', blank=True, null=True)
 

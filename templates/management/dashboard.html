@@ -11,13 +11,16 @@
 {% endblock %}
 {% block btn %}
     <div>
-        <select name="year" id="" class="custom-select">
-            <option value="">--------</option>
-            {% for year in years %}
-                <option value="{{ year.0 }}" {% if current_year == year.0 %}selected{% endif %}>{{ year.1 }}</option>
-            {% endfor %}
+        <form method="get">
+            <select name="year" id="" class="custom-select" onchange="form.submit()">
+                <option value="">------------</option>
+                {% for year in years %}
+                    <option value="{{ year.0 }}" {% if current_year == year.0 %}selected{% endif %}>{{ year.1 }}</option>
+                {% endfor %}
 
-        </select>
+            </select>
+        </form>
+
     </div>
 {% endblock %}
 {% block content %}
@@ -41,7 +44,7 @@
             </div>
         </div>
         <div class="col-xl-3 col-md-6 mb-4">
-            <div class="card border-left-warning shadow h-100 py-2">
+            <div class="card border-left-warning shadow h-100 py-2" data-toggle="modal" data-target="#revenue">
                 <div class="card-body">
                     <div class="row no-gutters align-items-center">
                         <div class="col mr-2">
@@ -56,7 +59,7 @@
             </div>
         </div>
         <div class="col-xl-3 col-md-6 mb-4">
-            <div class="card border-left-danger shadow h-100 py-2">
+            <div class="card border-left-danger shadow h-100 py-2" data-toggle="modal" data-target="#expenditure">
                 <div class="card-body">
                     <div class="row no-gutters align-items-center">
                         <div class="col mr-2">
@@ -104,16 +107,108 @@
                 </div>
             </div>
         </div>
+        <div class="col-6">
+            <div class="card">
+                <div class="card-header border-0">Patients Growth</div>
+                <div class="card-body">
+                    <div class="chart-area">
+                        <canvas id="patient"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="revenue" tabindex="-1" role="dialog" aria-labelledby="revenueModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header border-0 bg-white">
+                    <h5 class="modal-title" id="revenueModalLabel">Revenue for {{ current_year }}</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <table class="table table-sm table-borderless dataTable">
+                        <thead>
+                        <tr>
+                            <th>Stream</th>
+                            <th>Description</th>
+                            <th>Bill</th>
+                            <th>Patient</th>
+                            <th>Amount (GHS)</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for object in revs_for_year %}
+                            <tr>
+                                <td>{{ object.stream }}</td>
+                                <td>{{ object.description }}</td>
+                                <td>{{ object.bill.get_bill_type_display }}</td>
+                                <td>{{ object.patient.full_name }}</td>
+                                <td>{{ object.amount }}</td>
+                            </tr>
+                        {% endfor %}
+
+                        </tbody>
+                    </table>
+                </div>
+                <div class="modal-footer">
+                    <a href="{% url 'management:revenues' %}" class="btn btn-outline-danger">View All <i class="fa fa-angle-double-right"></i></a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="expenditure" tabindex="-1" role="dialog" aria-labelledby="expenditureModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header border-0 bg-white">
+                    <h5 class="modal-title" id="expenditureModalLabel">Expenditure for {{ current_year }}</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <table class="table table-sm table-borderless dataTable">
+                        <thead>
+                        <tr>
+                            <th>Category</th>
+                            <th>Item</th>
+                            <th>Cost (GHS)</th>
+                            <th>Date Added</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for object in exps_for_year %}
+                            <tr>
+                                <td>{{ object.category }}</td>
+                                <td>{{ object.item }}</td>
+                                <td>GHS {{ object.cost }}</td>
+                                <td>{{ object.created_at }}</td>
+                            </tr>
+                        {% endfor %}
+
+                        </tbody>
+                    </table>
+                </div>
+                <div class="modal-footer">
+{#                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>#}
+                    <a href="{% url 'management:expenditures' %}" class="btn btn-outline-danger">View All <i class="fa fa-angle-double-right"></i></a>
+                </div>
+            </div>
+        </div>
     </div>
 {% endblock %}
 {% block js %}
     <script>
+        $(document).ready(function() {
+            $('.dataTable').DataTable();
+        } );
         var ctx = document.getElementById('finance');
         var myLineChart = new Chart(ctx, {
             type: 'line',
             data: {
                 labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May',
-                'June', 'July', 'Aug', 'Sept', 'Oct', 'Nov', 'Dec'],
+                    'June', 'July', 'Aug', 'Sept', 'Oct', 'Nov', 'Dec'],
                 datasets: [
                     {
                         label: 'Revenue',
@@ -129,7 +224,21 @@
                         pointHoverBorderColor: "rgba(240, 52, 52, 1)",
                         pointHitRadius: 10,
                         pointBorderWidth: 2,
-                        data: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
+                        {#data: [{{ rev_line.jan }}, {{ rev_line.feb }}, {{ rev_line.mar }}, {{ rev_line.apr }}, {{ rev_line.may }}, {{ rev_line.june }}, {{ rev_line.july }}, {{ rev_line.aug }}, {{ rev_line.sept }}, {{ rev_line.oct }}, {{ rev_line.nov }}, {{ rev_line.dec }}]#}
+                        data: [
+                            {{ rev_line.jan }},
+                            {{ rev_line.feb }},
+                            {{ rev_line.mar }},
+                            {{ rev_line.apr }},
+                            {{ rev_line.may }},
+                            {{ rev_line.june }},
+                            {{ rev_line.july }},
+                            {{ rev_line.aug }},
+                            {{ rev_line.sept }},
+                            {{ rev_line.oct }},
+                            {{ rev_line.nov }},
+                            {{ rev_line.dec }},
+                        ]
                     },
                     {
                         label: 'Expenditure',
@@ -145,7 +254,21 @@
                         pointHoverBorderColor: "rgb(255,255,0)",
                         pointHitRadius: 10,
                         pointBorderWidth: 2,
-                        data: [2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22, 25]
+                        {#data: [{{ exp_line.jan }}, {{ exp_line.feb }}, {{ exp_line.mar }}, {{ exp_line.apr }}, {{ exp_line.may }}, {{ exp_line.june }}, {{ exp_line.july }}, {{ exp_line.aug }}, {{ exp_line.sept }}, {{ exp_line.oct }}, {{ exp_line.nov }}, {{ exp_line.dec }}]#}
+                        data: [
+                            {{ exp_line.jan }},
+                            {{ exp_line.feb }},
+                            {{ exp_line.mar }},
+                            {{ exp_line.apr }},
+                            {{ exp_line.may }},
+                            {{ exp_line.june }},
+                            {{ exp_line.july }},
+                            {{ exp_line.aug }},
+                            {{ exp_line.sept }},
+                            {{ exp_line.oct }},
+                            {{ exp_line.nov }},
+                            {{ exp_line.dec }},
+                        ]
                     },
 
                 ],
@@ -212,5 +335,106 @@
                 }
             }
         })
+
+        var cty = document.getElementById("patient");
+        var yourLineChart = new Chart(cty, {
+            type: 'line',
+            data: {
+                labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
+                datasets: [{
+                    label: "Patients",
+                    lineTension: 0.3,
+                    backgroundColor: "rgba(78, 115, 223, 0.05)",
+                    borderColor: "rgba(78, 115, 223, 1)",
+                    pointRadius: 3,
+                    pointBackgroundColor: "rgba(78, 115, 223, 1)",
+                    pointBorderColor: "rgba(78, 115, 223, 1)",
+                    pointHoverRadius: 3,
+                    pointHoverBackgroundColor: "rgba(78, 115, 223, 1)",
+                    pointHoverBorderColor: "rgba(78, 115, 223, 1)",
+                    pointHitRadius: 10,
+                    pointBorderWidth: 2,
+                    data: [
+                        {{ patient_line.jan }},
+                        {{ patient_line.feb }},
+                        {{ patient_line.mar }},
+                        {{ patient_line.apr }},
+                        {{ patient_line.june }},
+                        {{ patient_line.july }},
+                        {{ patient_line.aug }},
+                        {{ patient_line.sept }},
+                        {{ patient_line.oct }},
+                        {{ patient_line.nov }},
+                        {{ patient_line.dec }},
+                    ],
+                }],
+            },
+            options: {
+                maintainAspectRatio: false,
+                layout: {
+                    padding: {
+                        left: 10,
+                        right: 25,
+                        top: 25,
+                        bottom: 0
+                    }
+                },
+                scales: {
+                    xAxes: [{
+                        time: {
+                            unit: 'date'
+                        },
+                        gridLines: {
+                            display: false,
+                            drawBorder: false
+                        },
+                        ticks: {
+                            {#maxTicksLimit: 7#}
+                        }
+                    }],
+                    yAxes: [{
+                        ticks: {
+                            maxTicksLimit: 5,
+                            padding: 10,
+                            // Include a dollar sign in the ticks
+                            callback: function(value, index, values) {
+                                return value;
+                            }
+                        },
+                        gridLines: {
+                            color: "rgb(234, 236, 244)",
+                            zeroLineColor: "rgb(234, 236, 244)",
+                            drawBorder: false,
+                            borderDash: [2],
+                            zeroLineBorderDash: [2]
+                        }
+                    }],
+                },
+                legend: {
+                    display: false
+                },
+                tooltips: {
+                    backgroundColor: "rgb(255,255,255)",
+                    bodyFontColor: "#858796",
+                    titleMarginBottom: 10,
+                    titleFontColor: '#6e707e',
+                    titleFontSize: 14,
+                    borderColor: '#dddfeb',
+                    borderWidth: 1,
+                    xPadding: 15,
+                    yPadding: 15,
+                    displayColors: false,
+                    intersect: false,
+                    mode: 'index',
+                    caretPadding: 10,
+                    callbacks: {
+                        label: function(tooltipItem, chart) {
+                            var datasetLabel = chart.datasets[tooltipItem.datasetIndex].label || '';
+                            return datasetLabel + tooltipItem.yLabel;
+                        }
+                    }
+                }
+            }
+        });
     </script>
 {% endblock %}

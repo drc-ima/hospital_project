@@ -42,63 +42,128 @@
                 </div>
                 <div class="card">
                     <div class="card-header" id="headingTwo">
-                        <h5 class="mb-0">
-                            <button class="btn btn-link collapsed" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
-                                Vital Signs
-                            </button>
-                        </h5>
+                        <div class="row">
+                            <div class="col-md-8">
+                                <h5 class="mb-0">
+                                    <button class="btn btn-link collapsed" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                                        Vital Signs
+                                    </button>
+                                </h5>
+                            </div>
+                            <div class="col-md-4" align="right">
+                                <a href="{% url 'department:patient-vital-signs' object.id %}" title="Charts" class="btn btn-sm btn-outline-light rounded-circle">
+                                    <i class="fa fa-1x text-info fa-chart-pie"></i>
+                                </a>
+                            </div>
+                        </div>
+
+
                     </div>
                     <div id="collapseTwo" class="collapse show" aria-labelledby="headingTwo" data-parent="#accordion">
                         <div class="card-body">
-                            {% if object.weight %}
-                                <div class="list-group">
-                                    <div class="list-group-item">Weight: {{ object.weight }}</div>
-                                    <div class="list-group-item">Blood Pressure: {{ object.bp }}</div>
-                                    <div class="list-group-item">Respiration: {{ object.respiration }}</div>
-                                    <div class="list-group-item">Temperature: {{ object.temperature }}</div>
-                                </div>
-                            {% else %}
-                                <form action="{% url 'department:vital-signs' object.id %}" method="post">
-                                    {% csrf_token %}
+                            <div class="list-group-flush">
+                                <div class="list-group-item">
                                     <div class="row">
-                                        <div class="col-6">
-                                            <div class="form-group">
-                                                <label for="id_weight">Weight (Kg)</label>
-                                                <input required type="number" name="weight" id="id_weight" class="form-control">
-                                            </div>
-                                        </div>
-                                        <div class="col-6">
-                                            <div class="row">
-                                                <div class="col-6">
-                                                    <div class="form-group">
-                                                        <label for="id_sys">Systolic</label>
-                                                        <input required type="number" name="sys" id="id_sys" class="form-control">
-                                                    </div>
-                                                </div>
-                                                <div class="col-6">
-                                                    <div class="form-group">
-                                                        <label for="id_dias">Diastolic</label>
-                                                        <input required type="number" name="dias" id="id_dias" class="form-control">
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="col-6">
-                                            <div class="form-group">
-                                                <label for="id_res">Respiration (CpM)</label>
-                                                <input required type="number" name="respiration" id="id_res" class="form-control">
-                                            </div>
-                                        </div>
-                                        <div class="col-6">
-                                            <div class="form-group">
-                                                <label for="id_temp">Temperature (Cel)</label>
-                                                <input required type="number" name="temperature" id="id_temp" class="form-control">
-                                            </div>
+                                        <div class="col">New Vital Sign</div>
+                                        <div class="col" align="right">
+                                            <a href="#nvs" data-toggle="collapse" class="btn btn-sm btn-light" role="button" aria-expanded="false" aria-controls="nvs">
+                                                <i class="fa fa-sort text-warning"></i>
+                                            </a>
                                         </div>
                                     </div>
-                                    <button type="submit" class="btn btn-info">Submit</button>
-                                </form>
-                            {% endif %}
+                                    <div class="collapse multi-collapse" id="nvs">
+                                        <div class="card card-body mt-2">
+                                            <form action="{% url 'department:vital-signs' object.id %}" method="post">
+                                                {% csrf_token %}
+                                                <div class="row">
+                                                    <div class="col-6">
+                                                        <div class="form-group">
+                                                            <label for="id_weight">Weight (Kg)</label>
+                                                            <input step="0.01" required type="number" name="weight" id="id_weight" class="form-control">
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-6">
+                                                        <div class="row">
+                                                            <div class="col-6">
+                                                                <div class="form-group">
+                                                                    <label for="id_sys">Systolic</label>
+                                                                    <input required type="number" name="sys" id="id_sys" class="form-control">
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-6">
+                                                                <div class="form-group">
+                                                                    <label for="id_dias">Diastolic</label>
+                                                                    <input required type="number" name="dias" id="id_dias" class="form-control">
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-6">
+                                                        <div class="row">
+                                                            <div class="col-6">
+                                                                <div class="form-group">
+                                                                    <label for="id_res">Respiration (CpM)</label>
+                                                                    <input required type="number" name="respiration" id="id_res" class="form-control">
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-6">
+                                                                <div class="form-group">
+                                                                    <label for="id_pulse">Pulse (BpM)</label>
+                                                                    <input required type="number" name="pulse" id="id_pulse" class="form-control">
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-6">
+                                                        <div class="form-group">
+                                                            <label for="id_temp">Temperature (Cel)</label>
+                                                            <input step="0.01" required type="number" name="temperature" id="id_temp" class="form-control">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <button type="submit" class="btn btn-info">Submit</button>
+                                            </form>
+                                        </div>
+
+                                    </div>
+                                </div>
+                                {% for vs in object.vital_signs.all %}
+                                    <div class="list-group-item">
+                                        <div class="row">
+                                            <div class="col">{{ vs.created_at | date }} {{ vs.time }}</div>
+                                            <div class="col" align="right">
+                                                <a href="#vs1" data-toggle="collapse" class="btn btn-sm btn-light" role="button" aria-expanded="false" aria-controls="vs1">
+                                                    <i class="fa fa-sort text-warning"></i>
+                                                </a>
+                                            </div>
+                                        </div>
+                                        <div class="collapse multi-collapse" id="vs1">
+                                            <div class="card card-body mt-2">
+                                                <div class="list-group-flush">
+                                                    <div class="list-group-item list-group-item-secondary">
+                                                        Checked By: {{ vs.created_by.full_name }}
+                                                    </div>
+                                                    <div class="list-group-item">Weight: 111</div>
+                                                    <div class="list-group-item">Blood Pressure: 111</div>
+                                                    <div class="list-group-item">Respiration: 111</div>
+                                                    <div class="list-group-item">Pulse: 111</div>
+                                                    <div class="list-group-item">Temperature: 111</div>
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                {% endfor %}
+
+
+                            </div>
+                            {#                            {% if object.weight %}#}
+                            {#                                <div class="list-group">#}
+
+                            {#                                </div>#}
+                            {#                            {% else %}#}
+
+                            {#                            {% endif %}#}
 
                         </div>
                     </div>

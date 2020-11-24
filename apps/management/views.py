@@ -19,22 +19,10 @@ from apps.user.models import User
 def dashboard(request):
     wards = Ward.objects.count()
     beds = Bed.objects.count()
-    exps = Expenditure.objects.all()
-    total_exp = 0
-
-    for exp in exps.all():
-        total_exp += exp.cost
-
-    revs = Revenue.objects.all()
-
-    total_rev = 0
-
-    for rev in revs.all():
-        total_rev += rev.amount
 
     staffs = User.objects.count()
 
-    current_year = timezone.now().year
+    current_year = 2020
     years = [(current_year + year, current_year + year) for year in range(51)]
 
     # for year in range(51):
@@ -42,6 +30,244 @@ def dashboard(request):
 
     active_staffs = User.objects.filter(status='Active').count()
     inactive_staffs = User.objects.exclude(status='Active').count()
+
+    year = int(request.GET.get('year')) if request.GET.get('year') else current_year
+
+    exps = Expenditure.objects.filter(created_at__year=year)
+    total_exp = 0
+
+    for exp in exps.all():
+        total_exp += exp.cost
+
+    revs = Revenue.objects.filter(created_at__year=year)
+
+    total_rev = 0
+
+    for rev in revs.all():
+        total_rev += rev.amount
+
+    jan_rev = Revenue.objects.filter(created_at__year=year, created_at__month=1)
+    jan_rev_amount = 0
+
+    for rev in jan_rev.all():
+        jan_rev_amount += rev.amount
+
+    feb_rev = Revenue.objects.filter(created_at__year=year, created_at__month=2)
+    feb_rev_amount = 0
+
+    for rev in feb_rev.all():
+        feb_rev_amount += rev.amount
+
+    mar_rev = Revenue.objects.filter(created_at__year=year, created_at__month=3)
+    mar_rev_amount = 0
+
+    for rev in mar_rev.all():
+        mar_rev_amount += rev.amount
+
+    apr_rev = Revenue.objects.filter(created_at__year=year, created_at__month=4)
+    apr_rev_amount = 0
+
+    for rev in apr_rev.all():
+        apr_rev_amount += rev.amount
+
+    may_rev = Revenue.objects.filter(created_at__year=year, created_at__month=5)
+    may_rev_amount = 0
+
+    for rev in may_rev.all():
+        may_rev_amount += rev.amount
+
+    june_rev = Revenue.objects.filter(created_at__year=year, created_at__month=6)
+    june_rev_amount = 0
+
+    for rev in june_rev.all():
+        june_rev_amount += rev.amount
+
+    july_rev = Revenue.objects.filter(created_at__year=year, created_at__month=7)
+    july_rev_amount = 0
+
+    for rev in july_rev.all():
+        july_rev_amount += rev.amount
+
+    aug_rev = Revenue.objects.filter(created_at__year=year, created_at__month=8)
+    aug_rev_amount = 0
+
+    for rev in aug_rev.all():
+        aug_rev_amount += rev.amount
+
+    sept_rev = Revenue.objects.filter(created_at__year=year, created_at__month=9)
+    sept_rev_amount = 0
+
+    for rev in sept_rev.all():
+        sept_rev_amount += rev.amount
+
+    oct_rev = Revenue.objects.filter(created_at__year=year, created_at__month=10)
+    oct_rev_amount = 0
+
+    for rev in oct_rev.all():
+        oct_rev_amount += rev.amount
+
+    nov_rev = Revenue.objects.filter(created_at__year=year, created_at__month=11)
+    nov_rev_amount = 0
+
+    for rev in nov_rev.all():
+        nov_rev_amount += rev.amount
+
+    dec_rev = Revenue.objects.filter(created_at__year=year, created_at__month=12)
+    dec_rev_amount = 0
+
+    for rev in dec_rev.all():
+        dec_rev_amount += rev.amount
+
+    revenue = {
+        'jan': jan_rev_amount,
+        'feb': feb_rev_amount,
+        'mar': mar_rev_amount,
+        'apr': apr_rev_amount,
+        'may': may_rev_amount,
+        'june': june_rev_amount,
+        'july': july_rev_amount,
+        'aug': aug_rev_amount,
+        'sept': sept_rev_amount,
+        'oct': oct_rev_amount,
+        'nov': nov_rev_amount,
+        'dec': dec_rev_amount,
+    }
+
+    jan_exp = Expenditure.objects.filter(created_at__year=year, created_at__month=1)
+    jan_exp_amount = 0
+
+    for rev in jan_exp.all():
+        jan_exp_amount += rev.cost
+
+    feb_exp = Expenditure.objects.filter(created_at__year=year, created_at__month=2)
+    feb_exp_amount = 0
+
+    for rev in feb_exp.all():
+        feb_exp_amount += rev.cost
+
+    mar_exp = Expenditure.objects.filter(created_at__year=year, created_at__month=3)
+    mar_exp_amount = 0
+
+    for rev in mar_exp.all():
+        mar_exp_amount += rev.cost
+
+    apr_exp = Expenditure.objects.filter(created_at__year=year, created_at__month=4)
+    apr_exp_amount = 0
+
+    for rev in apr_exp.all():
+        apr_exp_amount += rev.cost
+
+    may_exp = Expenditure.objects.filter(created_at__year=year, created_at__month=5)
+    may_exp_amount = 0
+
+    for rev in may_exp.all():
+        may_exp_amount += rev.cost
+
+    june_exp = Expenditure.objects.filter(created_at__year=year, created_at__month=6)
+    june_exp_amount = 0
+
+    for rev in june_exp.all():
+        june_exp_amount += rev.cost
+
+    july_exp = Expenditure.objects.filter(created_at__year=year, created_at__month=7)
+    july_exp_amount = 0
+
+    for rev in july_exp.all():
+        july_exp_amount += rev.cost
+
+    aug_exp = Expenditure.objects.filter(created_at__year=year, created_at__month=8)
+    aug_exp_amount = 0
+
+    for rev in aug_exp.all():
+        aug_exp_amount += rev.cost
+
+    sept_exp = Expenditure.objects.filter(created_at__year=year, created_at__month=9)
+    sept_exp_amount = 0
+
+    for rev in sept_exp.all():
+        sept_exp_amount += rev.cost
+
+    oct_exp = Expenditure.objects.filter(created_at__year=year, created_at__month=10)
+    oct_exp_amount = 0
+
+    for rev in oct_exp.all():
+        oct_exp_amount += rev.cost
+
+    nov_exp = Expenditure.objects.filter(created_at__year=year, created_at__month=11)
+    nov_exp_amount = 0
+
+    for rev in nov_exp.all():
+        nov_exp_amount += rev.cost
+
+    dec_exp = Expenditure.objects.filter(created_at__year=year, created_at__month=12)
+    dec_exp_amount = 0
+
+    for rev in dec_exp.all():
+        dec_exp_amount += rev.cost
+
+    expenditure = {
+        'jan': jan_exp_amount,
+        'feb': feb_exp_amount,
+        'mar': mar_exp_amount,
+        'apr': apr_exp_amount,
+        'may': may_exp_amount,
+        'june': june_exp_amount,
+        'july': july_exp_amount,
+        'aug': aug_exp_amount,
+        'sept': sept_exp_amount,
+        'oct': oct_exp_amount,
+        'nov': nov_exp_amount,
+        'dec': dec_exp_amount,
+    }
+
+    patients = {
+        'jan': Patient.objects.filter(created_at__year=year, created_at__month=1).count(),
+        'feb': Patient.objects.filter(created_at__year=year, created_at__month=2).count(),
+        'mar': Patient.objects.filter(created_at__year=year, created_at__month=3).count(),
+        'apr': Patient.objects.filter(created_at__year=year, created_at__month=4).count(),
+        'may': Patient.objects.filter(created_at__year=year, created_at__month=5).count(),
+        'june': Patient.objects.filter(created_at__year=year, created_at__month=6).count(),
+        'july': Patient.objects.filter(created_at__year=year, created_at__month=7).count(),
+        'aug': Patient.objects.filter(created_at__year=year, created_at__month=8).count(),
+        'sept': Patient.objects.filter(created_at__year=year, created_at__month=9).count(),
+        'oct': Patient.objects.filter(created_at__year=year, created_at__month=10).count(),
+        'nov': Patient.objects.filter(created_at__year=year, created_at__month=11).count(),
+        'dec': Patient.objects.filter(created_at__year=year, created_at__month=12).count(),
+    }
+
+    # year = int(request.GET.get('year')) if request.GET.get('year') else timezone.now().year
+
+    # revenue = {
+    #     'jan': Revenue.objects.filter(created_at__month=1, created_at__year=year).count(),
+    #     'feb': Revenue.objects.filter(created_at__month=2, created_at__year=year).count(),
+    #     'mar': Revenue.objects.filter(created_at__month=3, created_at__year=year).count(),
+    #     'apr': Revenue.objects.filter(created_at__month=4, created_at__year=year).count(),
+    #     'may': Revenue.objects.filter(created_at__month=5, created_at__year=year).count(),
+    #     'june': Revenue.objects.filter(created_at__month=6, created_at__year=year).count(),
+    #     'july': Revenue.objects.filter(created_at__month=7, created_at__year=year).count(),
+    #     'aug': Revenue.objects.filter(created_at__month=8, created_at__year=year).count(),
+    #     'sept': Revenue.objects.filter(created_at__month=9, created_at__year=year).count(),
+    #     'oct': Revenue.objects.filter(created_at__month=10, created_at__year=year).count(),
+    #     'nov': Revenue.objects.filter(created_at__month=11, created_at__year=year).count(),
+    #     'dec': Revenue.objects.filter(created_at__month=12, created_at__year=year).count(),
+    # }
+    #
+    # expenditure = {
+    #     'jan': Expenditure.objects.filter(created_at__month=1, created_at__year=year).count(),
+    #     'feb': Expenditure.objects.filter(created_at__month=2, created_at__year=year).count(),
+    #     'mar': Expenditure.objects.filter(created_at__month=3, created_at__year=year).count(),
+    #     'apr': Expenditure.objects.filter(created_at__month=4, created_at__year=year).count(),
+    #     'may': Expenditure.objects.filter(created_at__month=5, created_at__year=year).count(),
+    #     'june': Expenditure.objects.filter(created_at__month=6, created_at__year=year).count(),
+    #     'july': Expenditure.objects.filter(created_at__month=7, created_at__year=year).count(),
+    #     'aug': Expenditure.objects.filter(created_at__month=8, created_at__year=year).count(),
+    #     'sept': Expenditure.objects.filter(created_at__month=9, created_at__year=year).count(),
+    #     'oct': Expenditure.objects.filter(created_at__month=10, created_at__year=year).count(),
+    #     'nov': Expenditure.objects.filter(created_at__month=11, created_at__year=year).count(),
+    #     'dec': Expenditure.objects.filter(created_at__month=12, created_at__year=year).count(),
+    # }
+
+    # print(type(year))
 
     context = {
         'wards': wards,
@@ -52,7 +278,15 @@ def dashboard(request):
         'active': active_staffs,
         'inactive': inactive_staffs,
         'years': years,
-        'current_year': current_year,
+        'current_year': year,
+        'rev_line': revenue,
+        'exp_line': expenditure,
+        'patient_line': patients,
+        'revs_for_year': revs,
+        'exps_for_year': exps,
+        # 'rev_line': revenue,
+        # 'exp_line': expenditure,
+        # 'nov': Revenue.objects.filter(created_at__year=2020)
     }
     return render(request=request, template_name='management/dashboard.html', context=context)
 
